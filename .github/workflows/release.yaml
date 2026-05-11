@@ -55,7 +55,7 @@ jobs:
 
       - name: Set up QEMU
         if: ${{ env.VERSION != '' }}
-        uses: docker/setup-qemu-action@v4
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a
 
       - name: Set up Docker Buildx
         if: ${{ env.VERSION != '' }}
@@ -64,7 +64,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
 
       - name: Docker Login in GHCR
-        uses: docker/login-action@v4
+        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121
         if: ${{ env.VERSION != '' }}
         id: configure-login-ghcr
         with:
@@ -75,7 +75,7 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v6
+        uses: docker/metadata-action@030e881283bb7a6894de51c315a6bfe6a94e05cf
         if: ${{ env.VERSION != '' }}
         with:
           images: |
@@ -84,7 +84,7 @@ jobs:
             type=semver,pattern={{version}},value=${{ env.VERSION }}
 
       - name: Build and push
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@bcafcacb16a39f128d818304e6c9c0c18556b85f
         id: build-push
         if: ${{ env.VERSION != '' }}
         with:
@@ -95,7 +95,7 @@ jobs:
 
       - name: Set up cosign
         if: ${{ env.VERSION != '' }}
-        uses: sigstore/cosign-installer@v4
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6
 
       - name: Sign Container Image
         if: ${{ env.VERSION != '' }}
@@ -115,12 +115,12 @@ jobs:
         env:
           COSIGN_PUBLIC_KEY: ${{ secrets.COSIGN_PUBLIC_KEY }}
 
-      - uses: anchore/sbom-action@v0
+      - uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610
         if: ${{ env.VERSION != '' }}
         with:
           image: ghcr.io/${{ github.repository }}:${{ env.VERSION }}
 
-      - uses: anchore/sbom-action/publish-sbom@v0
+      - uses: anchore/sbom-action/publish-sbom@e22c389904149dbc22b58101806040fa8d37a610
         if: ${{ env.VERSION != '' }}
         with:
           sbom-artifact-match: ".*\\.spdx$"
