@@ -11,7 +11,8 @@ RUN pip install -r requirements.txt
 
 EXPOSE 8081
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
+ENV HOST=0.0.0.0
 
 HEALTHCHECK --timeout=30s --interval=1m30s --retries=5 \
   CMD curl -s --fail http://localhost:8081/health || exit 1

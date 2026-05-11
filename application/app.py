@@ -2,6 +2,8 @@
 Module for define API endpoints
 """
 
+import os
+
 import uvicorn
 from fastapi import FastAPI
 
@@ -35,4 +37,4 @@ async def health():
     return health_message
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8081)
+    uvicorn.run(app, host=os.getenv("HOST", "127.0.0.1"), port=8081)
