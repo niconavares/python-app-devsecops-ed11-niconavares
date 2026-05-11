@@ -74,10 +74,53 @@ jobs:
           name: coverage
           path: coverage.xml
 
+  docker-build:
+    if: "${{ !contains(github.event.commits[0].message, 'chore(release):') }}"
+    needs:
+      - lint-python-code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          load: true
+          tags: ci-image:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test - run container and check /health
+        run: |
+          docker run -d --name ci-smoke -p 8081:8081 ci-image:${{ github.sha }}
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:8081/health; then
+              echo "Health check passed"
+              exit 0
+            fi
+            echo "Waiting for app to be ready... ($i/30)"
+            sleep 2
+          done
+          echo "Health check failed - dumping container logs:"
+          docker logs ci-smoke
+          exit 1
+
+      - name: Cleanup container
+        if: always()
+        run: docker rm -f ci-smoke || true
+
   security-checks:
     if: "${{ !contains(github.event.commits[0].message, 'chore(release):') }}"
     needs:
       - unit-tests
+      - docker-build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
