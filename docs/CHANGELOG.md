@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/niconavares/python-app-devsecops-ed11-niconavares/compare/v1.0.0...v1.0.1) (2026-05-11)
+
+
+### Bug Fixes
+
+* **deps:** update semantic-release monorepo ([153778b](https://github.com/niconavares/python-app-devsecops-ed11-niconavares/commit/153778b6acc1398f890440ac86af618e7f03a392))
+
 # 1.0.0 (2026-05-11)
 
 
