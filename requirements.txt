@@ -4,7 +4,7 @@ hypercorn==0.18.0
 dnspython==2.8.0
 email-validator==2.3.0
 pylint==4.0.5
-pytest==9.0.3
+pytest==9.1.1
 coverage==7.14.0
 pytest-cov==7.1.0
 certifi==2026.4.22
